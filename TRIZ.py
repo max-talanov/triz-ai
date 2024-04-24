@@ -107,7 +107,7 @@ def main():
                 # Generate IFR Here
                 st.markdown("**Step 2 out of 7.**  Generating IFR...", unsafe_allow_html=True)
                 st.session_state["ifr"] = query_gpt(
-                    f"Describe the ideal final result (IFR) for the following. Problem: {problem_description}\nLimitations: {other_limitations}\nBudget: {budget_limitation}"
+                    f"Describe the ideal final result (IFR) for the following problem: {problem_description} with the following limitations: Budget limitation is {budget_limitation}, Other limitations: {other_limitations}"
                 )
 
     # Step 2: Validate IFR
