@@ -7,7 +7,7 @@ client = OpenAI()
 
 def query_gpt(prompt):
     response = client.chat.completions.create(
-        model="gpt-4-turbo-preview",
+        model="gpt-4-turbo-2024-04-09",
         temperature=1,
         max_tokens=1600,
         top_p=1,
@@ -29,7 +29,7 @@ def query_gpt(prompt):
 
 def query_gpt_json(prompt):
     response = client.chat.completions.create(
-        model="gpt-4-turbo-preview",
+        model="gpt-4-turbo-2024-04-09",
         temperature=1,
         max_tokens=1600,
         top_p=1,
@@ -55,16 +55,7 @@ def main():
     with st.expander("Show Main TRIZ ARIZ Definitions"):
         st.write("""
         **ARIZ (Algorithm of Inventive Problem Solving):**
-        ARIZ is a systematic and structured methodology for complex problem solving, primarily used within the TRIZ framework for innovation and invention. It provides a step-by-step approach to navigate from problem identification to the implementation of novel solutions by overcoming psychological inertia, and utilizing inventive principles and patterns.
-        
-        **Key Components of ARIZ Include:**
-        - **Problem Definition:** Detailed analysis of the problem to fully understand its nature and context.
-        - **Problem Modeling:** Transforming the real-life problem into a generalized model that discloses contradictions.
-        - **Solution Generation:** Using TRIZ tools such as the contradiction matrix, 40 inventive principles, and separation principles to generate solutions.
-        - **Solution Analysis and Selection:** Evaluating generated solutions based on their novelty, technical feasibility, and potential for impact.
-        - **Implementation Planning:** Detailed planning on how the solution can be implemented in the real world scenario.
-
-        ARIZ is often considered as a more advanced tool within the TRIZ toolkit, intended for tackling more complex and less straightforward problems where simpler TRIZ tools might not suffice.
+        ARIZ is a systematic and structured methodology for complex problem solving, primarily used within the TRIZ framework for innovation and invention. It provides a step-by-step approach to navigate from problem identification to the implementation of novel solutions by overcoming psychological inertia, and utilizing inventive principles and patterns. ARIZ is often considered as a more advanced tool within the TRIZ toolkit, intended for tackling more complex and less straightforward problems where simpler TRIZ tools might not suffice.
         """)
         
         st.write("""
@@ -147,22 +138,26 @@ def main():
                 f"Describe 4 technical contradictions of the IFR? IFR: {st.session_state['ifr']} Generate a list of 4 TCs in JSON format: 'list': [TC1, TC2]"
             )["list"]
             # Displaying technical contradictions before selection
-            st.markdown("**Step 4 out of 7.**  Technical contradictions highlight the key areas where improvements are needed to develop innovative solutions. Please, select technical contradictions:", unsafe_allow_html=True)
-            for tc in st.session_state["technical_contradictions"]:
-                st.info(tc)
+            st.markdown("**Step 4 out of 7.** Please, select technical contradictions:", unsafe_allow_html=True)
+            for tc in enumerate(st.session_state["technical_contradictions"], 1):
+                tc_str = str(tc)
+                tc_str = str(tc).replace("'", " ").replace("{", " ").replace("}", " ").replace("(", " ").replace(")", " ")
+                st.write(tc_str)
 
     # Step 4: Select Technical Contradictions
     if (
         "technical_contradictions" in st.session_state
         and "contradictions_selected" not in st.session_state
     ):
+        tc_names = [f"TC{i+1}" for i in range(len(st.session_state["technical_contradictions"]))]
         selected = st.multiselect(
             "Select one or more contradictions:",
-            st.session_state["technical_contradictions"],
+            tc_names,
             [],
         )
         if st.button("Submit Contradictions"):
-            st.session_state["selected_contradictions"] = selected
+            selected_tc_indices = [tc_names.index(tc) for tc in selected]
+            st.session_state["selected_contradictions"] = [st.session_state["technical_contradictions"][i] for i in selected_tc_indices]
             st.session_state["contradictions_selected"] = True
 
             ifr = st.session_state["ifr"]
@@ -179,8 +174,6 @@ def main():
             f"Taking this IFR into account: {st.session_state['ifr']}, solve the following contradictions: {st.session_state['selected_contradictions']} "
         )
         st.info(st.session_state["solved_contradictions"])
-        # Implement logic to solve contradictions and display solutions
-        # This might involve additional interactions with GPT based on selected contradictions
         st.session_state["compare_with_sota"] = query_gpt(
             f"Compare these techinical contradictions with the current state of the art: {st.session_state['solved_contradictions']}"
         )
