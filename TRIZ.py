@@ -5,6 +5,7 @@ import json
 client = OpenAI()
 
 
+
 def query_gpt(prompt):
     response = client.chat.completions.create(
         model="gpt-4-turbo-2024-04-09",
@@ -16,7 +17,7 @@ def query_gpt(prompt):
         messages=[
             {
                 "role": "system",
-                "content": """You are a helpful assistant, well-versed in TRIZ and ARIZ principles.""",
+                "content": """You are a helpful assistant, well-versed in TRIZ and ARIZ principles. Your audience are tech specialists. Aim for a Flesch reading score of 80 or higher. Use the active voice and avoid adverbs. Avoid buzzwords and instead use plain English. Avoid being salesy or overly enthusiastic and instead express calm confidence. Be concise. Focus on explaining how to solve the problem.""",
             },
             {
                 "role": "user",
@@ -38,7 +39,7 @@ def query_gpt_json(prompt):
         messages=[
             {
                 "role": "system",
-                "content": """You are a helpful assistant, well-versed in TRIZ and ARIZ principles.""",
+                "content": """You are a helpful assistant, well-versed in TRIZ and ARIZ principles. Your audience are tech specialists. Aim for a Flesch reading score of 80 or higher. Use the active voice and avoid adverbs. Avoid buzzwords and instead use plain English. Avoid being salesy or overly enthusiastic and instead express calm confidence. Be consize. Answer shortly and clearly.""",
             },
             {
                 "role": "user",
@@ -87,7 +88,7 @@ def main():
                 "Describe the problem you are trying to solve."
             )
             other_limitations = st.text_area("Describe other limitations (if any).")
-            budget_limitation = st.text_area("Is there a budget limitation?")
+            budget_limitation = st.text_area("What is the budget for this solution?")
             submitted = st.form_submit_button("Submit")
 
             if submitted:
